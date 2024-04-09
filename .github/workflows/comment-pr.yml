@@ -36,4 +36,7 @@ jobs:
 
       - name: Run a one-line script
         if: steps.check.outputs.match == 'true'
-        run: echo "The comment contained 'deploy'!"
+        run: |
+          COMMENT_BODY="${{ github.event.comment.body }}"
+          echo "The comment contained 'deploy'!"
+          echo "Body > $COMMENT_BODY"
