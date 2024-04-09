@@ -23,6 +23,20 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      # Runs a single command using the runners shell
+      - name: Check comment
+        id: check
+        run: |
+          COMMENT_BODY="${{ github.event.comment.body }}"
+          MATCH=$(echo "$COMMENT_BODY" | grep -i 'deploy' || true) 
+          if [[ -n "$MATCH" ]]; then
+            echo "::set-output name=match::true"
+          else
+            echo "::set-output name=match::false"
+          fi
+
       - name: Run a one-line script
-        run: echo Comment on PR!
+        if: steps.check.outputs.match == 'true'
+        run: |
+          COMMENT_BODY="${{ github.event.comment.body }}"
+          echo "The comment contained 'deploy'!"
+          echo "Body > $COMMENT_BODY"
